@@ -6,17 +6,15 @@ const {
   ArticleEntityWhoCategorizedArticleContract,
 } = require("newsnexus07db");
 
-// const { loadKeywordsFromExcel } = require("./modules/utilitiesKeywords");
-const { scoreArticlesWithKeywords } = require("./modules/utilitiesScorer");
+const { scoreArticleWithKeywords } = require("./modules/utilitiesScorer");
 const { loadKeywordsFromExcel } = require("./modules/utilitiesExcel");
-const { saveScoresToDatabase } = require("./modules/utilitiesSaver");
 
-console.log("--- NewsNexus Relevancy Scorer 01 ---");
+console.log("--- NewsNexus Semantic Scorer 02 ---");
 
 async function main() {
   const aiModel = await ArtificialIntelligence.findOne({
     where: {
-      name: "NewsNexusRelevancyScorer01",
+      name: "NewsNexusSemanticScorer02",
       huggingFaceModelName: "Xenova/paraphrase-MiniLM-L6-v2",
       huggingFaceModelType: "feature-extraction",
     },
@@ -42,14 +40,34 @@ async function main() {
   );
   console.log("Loaded keywords:", keywords.length);
 
-  // const scoredArticles = await scoreArticlesWithKeywords(articles, keywords);
-  const scoredArticles = await scoreArticlesWithKeywords(
-    articlesArray,
-    keywords
+  const embedder = await require("@xenova/transformers").pipeline(
+    "feature-extraction",
+    "Xenova/paraphrase-MiniLM-L6-v2"
   );
-  console.log("Scoring complete");
 
-  await saveScoresToDatabase(scoredArticles, keywords, entityWhoCategorizesId);
+  // for (let article of articlesArray) {
+  for (let i = 0; i < articlesArray.length; i++) {
+    const article = articlesArray[i];
+    const { keyword, keywordRating } = await scoreArticleWithKeywords(
+      article,
+      keywords,
+      embedder
+    );
+
+    await ArticleEntityWhoCategorizedArticleContract.upsert({
+      articleId: article.id,
+      entityWhoCategorizesId,
+      keyword,
+      keywordRating,
+    });
+
+    if ((i + 1) % 100 === 0) {
+      // console.log(`Scored and saved article ${i}`);
+      console.log(`Processed ${i + 1} articles...`);
+    }
+  }
+
+  console.log("✅ All articles processed and saved.");
 }
 
 async function createFilteredArticlesArray(entityWhoCategorizesId) {

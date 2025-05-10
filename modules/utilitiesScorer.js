@@ -1,5 +1,4 @@
 // modules/utilitiesScorer.js
-const { pipeline } = require("@xenova/transformers");
 
 // cosine similarity helper
 function cosineSimilarity(vecA, vecB) {
@@ -9,85 +8,36 @@ function cosineSimilarity(vecA, vecB) {
   return dot / (normA * normB);
 }
 
-async function scoreArticlesWithKeywords(articles, keywords) {
-  console.log("Scoring articles with keywords...");
-  const embedder = await pipeline(
-    "feature-extraction",
-    "Xenova/paraphrase-MiniLM-L6-v2"
-  );
+async function scoreArticleWithKeywords(article, keywords, embedder) {
+  const articleVec = (
+    await embedder(article.description, {
+      pooling: "mean",
+      normalize: true,
+    })
+  ).data;
 
-  // Encode all keywords
-  const keywordEmbeddings = {};
+  let topKeyword = null;
+  let topScore = -Infinity;
+
   for (let keyword of keywords) {
-    // console.log(`Processing keyword: ${keyword}`);
-    const output = await embedder(keyword, {
-      pooling: "mean",
-      normalize: true,
-    });
-    keywordEmbeddings[keyword] = output.data;
-  }
+    const keywordVec = (
+      await embedder(keyword, {
+        pooling: "mean",
+        normalize: true,
+      })
+    ).data;
 
-  console.log("Keywords encoded");
-  // Score each article
-  const scoredArticles = [];
-  for (let article of articles) {
-    const articleVec = await embedder(article.description, {
-      pooling: "mean",
-      normalize: true,
-    });
+    const score = cosineSimilarity(articleVec, keywordVec);
 
-    let topKeyword = null;
-    let topScore = -Infinity;
-
-    for (let keyword of keywords) {
-      const keywordVec = keywordEmbeddings[keyword];
-      const score = cosineSimilarity(articleVec.data, keywordVec);
-
-      if (score > topScore) {
-        topScore = score;
-        topKeyword = keyword;
-      }
-    }
-
-    scoredArticles.push({
-      id: article.id,
-      description: article.description,
-      keyword: topKeyword,
-      keywordRating: topScore,
-    });
-
-    if (article.id % 1000 === 0) {
-      console.log(`Processed article: ${article.id}`);
+    if (score > topScore) {
+      topScore = score;
+      topKeyword = keyword;
     }
   }
-  // for (let article of articles) {
-  //   const articleVec = await embedder(article.description, {
-  //     pooling: "mean",
-  //     normalize: true,
-  //   });
 
-  //   const keywordScores = {};
-  //   for (let keyword of keywords) {
-  //     const keywordVec = keywordEmbeddings[keyword];
-  //     const score = cosineSimilarity(articleVec.data, keywordVec);
-  //     keywordScores[keyword] = score;
-  //   }
-
-  //   scoredArticles.push({
-  //     id: article.id,
-  //     description: article.description,
-  //     scores: keywordScores,
-  //   });
-  //   if (article.id % 1000 === 0) {
-  //     console.log(`Processed article: ${article.id}`);
-  //   }
-  // }
-
-  console.log("Articles scored");
-
-  return scoredArticles;
+  return { keyword: topKeyword, keywordRating: topScore };
 }
 
 module.exports = {
-  scoreArticlesWithKeywords,
+  scoreArticleWithKeywords,
 };
