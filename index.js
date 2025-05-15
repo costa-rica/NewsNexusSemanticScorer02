@@ -4,6 +4,7 @@ const {
   EntityWhoCategorizedArticle,
   ArtificialIntelligence,
   ArticleEntityWhoCategorizedArticleContract,
+  ArticleApproved,
 } = require("newsnexus07db");
 
 const { scoreArticleWithKeywords } = require("./modules/utilitiesScorer");
@@ -84,14 +85,34 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
   );
 
   // Step 2: Get all articles
-  const allArticles = await Article.findAll();
+  const allArticles = await Article.findAll({
+    include: [
+      {
+        model: ArticleApproved,
+      },
+    ],
+  });
 
   // Step 3: Filter out articles already processed
   const filteredArticles = allArticles.filter(
     (article) => !alreadyProcessedIds.has(article.id)
   );
 
-  return filteredArticles;
+  const articlesArrayModified = articlesArray.map((article) => {
+    let description = article.description;
+    if (article.description === null || article.description === "") {
+      const articleApproved = article.ArticleApproveds?.[0];
+      if (articleApproved) {
+        description = articleApproved.textForPdfReport;
+      }
+    }
+    return {
+      ...article,
+      description,
+    };
+  });
+
+  return articlesArrayModified;
 }
 
 main();
