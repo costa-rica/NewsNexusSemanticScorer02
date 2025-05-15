@@ -55,6 +55,11 @@ async function main() {
       embedder
     );
 
+    // console.log(`article id: ${article.id}`);
+    // console.log(`article description: ${article.description}`);
+    // console.log(`keyword: ${keyword}`);
+    // console.log(`keyword rating: ${keywordRating}`);
+
     await ArticleEntityWhoCategorizedArticleContract.upsert({
       articleId: article.id,
       entityWhoCategorizesId,
@@ -98,7 +103,7 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
     (article) => !alreadyProcessedIds.has(article.id)
   );
 
-  const articlesArrayModified = articlesArray.map((article) => {
+  const articlesArrayModified = filteredArticles.map((article) => {
     let description = article.description;
     if (article.description === null || article.description === "") {
       const articleApproved = article.ArticleApproveds?.[0];
@@ -107,7 +112,7 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
       }
     }
     return {
-      ...article,
+      ...article.dataValues,
       description,
     };
   });
