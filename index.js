@@ -59,13 +59,14 @@ async function main() {
     // console.log(`article description: ${article.description}`);
     // console.log(`keyword: ${keyword}`);
     // console.log(`keyword rating: ${keywordRating}`);
-
-    await ArticleEntityWhoCategorizedArticleContract.upsert({
-      articleId: article.id,
-      entityWhoCategorizesId,
-      keyword,
-      keywordRating,
-    });
+    if (keyword && keywordRating) {
+      await ArticleEntityWhoCategorizedArticleContract.upsert({
+        articleId: article.id,
+        entityWhoCategorizesId,
+        keyword,
+        keywordRating,
+      });
+    }
 
     if ((i + 1) % 100 === 0) {
       // console.log(`Scored and saved article ${i}`);

@@ -9,6 +9,11 @@ function cosineSimilarity(vecA, vecB) {
 }
 
 async function scoreArticleWithKeywords(article, keywords, embedder) {
+  if (!article.description) {
+    console.log(`article ${article.id} has no description`);
+    return { keyword: null, keywordRating: null };
+  }
+
   const articleVec = (
     await embedder(article.description, {
       pooling: "mean",
