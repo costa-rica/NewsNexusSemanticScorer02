@@ -12,14 +12,14 @@ async function scoreArticleWithKeywords(article, keywords, embedder) {
   let descriptionUsedToScore = article.description;
 
   if (!descriptionUsedToScore) {
-    console.log(
-      `article ${article.id} has no description, using title instead`
-    );
+    // console.log(
+    //   `article ${article.id} has no description, using title instead`
+    // );
     descriptionUsedToScore = article.title;
   }
 
   if (!descriptionUsedToScore) {
-    console.log(`article ${article.id} has no description, no title either`);
+    console.log(`👀 article ${article.id} has no description, no title either`);
     return { keyword: null, keywordRating: null };
   }
 

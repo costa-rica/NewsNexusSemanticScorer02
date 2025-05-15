@@ -107,6 +107,9 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
   const articlesArrayModified = filteredArticles.map((article) => {
     let description = article.description;
     if (article.description === null || article.description === "") {
+      // console.log(
+      //   `article ${article.id} has no description replaced with approved text`
+      // );
       const articleApproved = article.ArticleApproveds?.[0];
       if (articleApproved) {
         description = articleApproved.textForPdfReport;
