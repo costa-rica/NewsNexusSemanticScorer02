@@ -9,7 +9,7 @@ const {
 
 const { scoreArticleWithKeywords } = require("./modules/utilitiesScorer");
 const { loadKeywordsFromExcel } = require("./modules/utilitiesExcel");
-
+const runScorerFlag = process.argv.includes("--runScorer");
 console.log("--- NewsNexus Semantic Scorer 02 ---");
 
 async function main() {
@@ -124,4 +124,8 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
   return articlesArrayModified;
 }
 
-main();
+if (runScorerFlag) {
+  main();
+} else {
+  console.log("Run with --runScorer flag to run the scorer.");
+}
