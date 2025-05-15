@@ -9,11 +9,9 @@ const {
 
 const { scoreArticleWithKeywords } = require("./modules/utilitiesScorer");
 const { loadKeywordsFromExcel } = require("./modules/utilitiesExcel");
-// const runScorerFlag = process.argv.includes("--runScorer");
-const runScorerFlag =
-  process.env.RUN_SCORER === "true" || process.argv.includes("--runScorer");
+
 console.log("--- NewsNexus Semantic Scorer 02 ---");
-console.log("runScorerFlag: ", runScorerFlag);
+
 async function main() {
   const aiModel = await ArtificialIntelligence.findOne({
     where: {
@@ -126,8 +124,4 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
   return articlesArrayModified;
 }
 
-if (runScorerFlag) {
-  main();
-} else {
-  console.log("Run with --runScorer flag to run the scorer.");
-}
+main();
