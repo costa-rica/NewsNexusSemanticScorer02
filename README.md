@@ -1,5 +1,13 @@
 # NewsNexusSemanticScorer02
 
+## run
+
+```bash
+node index.js --runScorer
+```
+
+- `--runScorer` is required to run the scorer.
+
 ## Description
 
 This is a Node.js script that scores articles based on their semantic similarity to a set of keywords using the Hugging Face Transformers library. It uses keywords from an Excel file. The excel file is stored in the env variable PATH_TO_KEYWORDS_EXCEL_FILE.
