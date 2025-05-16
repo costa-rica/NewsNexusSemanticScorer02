@@ -73,7 +73,7 @@ async function main() {
     }
 
     // if ((i + 1) % 100 === 0) {
-    if ((i + 1) % 1 === 0) {
+    if ((i + 1) % 100 === 0) {
       // console.log(`Scored and saved article ${i}`);
       console.log(`Processed ${i + 1} articles...`);
       createLogTextFileIsRunningStatus(i + 1);
