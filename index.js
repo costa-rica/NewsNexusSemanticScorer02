@@ -9,7 +9,8 @@ const { scoreArticleWithKeywords } = require("./modules/utilitiesScorer");
 const {
   loadKeywordsFromExcel,
   createFilteredArticlesArray,
-  createLogTextFileStatus,
+  createLogTextFileCompletedStatus,
+  createLogTextFileIsRunningStatus,
 } = require("./modules/utilitiesMisc");
 
 console.log("--- NewsNexus Semantic Scorer 02 ---");
@@ -71,12 +72,14 @@ async function main() {
       });
     }
 
-    if ((i + 1) % 100 === 0) {
+    // if ((i + 1) % 100 === 0) {
+    if ((i + 1) % 1 === 0) {
       // console.log(`Scored and saved article ${i}`);
       console.log(`Processed ${i + 1} articles...`);
+      createLogTextFileIsRunningStatus(i + 1);
     }
   }
-  createLogTextFileStatus(articlesArray.length);
+  createLogTextFileCompletedStatus(articlesArray.length);
   console.log("✅ All articles processed and saved.");
 }
 

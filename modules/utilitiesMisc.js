@@ -71,12 +71,43 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
   return articlesArrayModified;
 }
 
-function createLogTextFileStatus(scoredArticleCount) {
+function createLogTextFileCompletedStatus(scoredArticleCount) {
   // Create timestamp in format YYYYMMDD-HHMMSS
   const now = new Date();
   const timestamp = now.toISOString();
 
-  const fileName = `lastRun.txt`;
+  const fileName = `lastRunCompleted.txt`;
+  const logDir = process.env.PATH_TO_SEMANTIC_SCORER_DIR;
+
+  if (!logDir) {
+    console.error("PATH_TO_SEMANTIC_SCORER_DIR is not defined in .env");
+    return;
+  }
+
+  const fullPath = path.join(logDir, fileName);
+  const content = `Count of Loops: ${scoredArticleCount}, on ${timestamp}`;
+
+  fs.writeFile(fullPath, content, (err) => {
+    if (err) {
+      console.error("Failed to write log file:", err);
+    } else {
+      console.log(`Log file created at ${fullPath}`);
+    }
+  });
+  // delete the isRunningStatus.txt file
+  fs.unlink(path.join(logDir, "isRunningStatus.txt"), (err) => {
+    if (err) {
+      console.error("Failed to delete isRunningStatus.txt file:", err);
+    }
+  });
+}
+
+function createLogTextFileIsRunningStatus(scoredArticleCount) {
+  // Create timestamp in format YYYYMMDD-HHMMSS
+  const now = new Date();
+  const timestamp = now.toISOString();
+
+  const fileName = `isRunningStatus.txt`;
   const logDir = process.env.PATH_TO_SEMANTIC_SCORER_DIR;
 
   if (!logDir) {
@@ -99,5 +130,6 @@ function createLogTextFileStatus(scoredArticleCount) {
 module.exports = {
   loadKeywordsFromExcel,
   createFilteredArticlesArray,
-  createLogTextFileStatus,
+  createLogTextFileCompletedStatus,
+  createLogTextFileIsRunningStatus,
 };
