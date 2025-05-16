@@ -10,7 +10,7 @@ node index.js --runScorer
 
 ## Description
 
-This is a Node.js script that scores articles based on their semantic similarity to a set of keywords using the Hugging Face Transformers library. It uses keywords from an Excel file. The excel file is stored in the env variable PATH_TO_KEYWORDS_EXCEL_FILE.
+This is a Node.js script that scores articles based on their semantic similarity to a set of keywords using the Hugging Face Transformers library. It uses keywords from an Excel file. The excel file is stored in the env variable PATH_TO_SEMANTIC_SCORER_KEYWORDS_EXCEL_FILE.
 
 - This project is a follow up to NewsNexusRelevancyScorer01.
 - <b>Key Difference:</b> This project only saves the top scored keyword for each article in the database.
@@ -34,7 +34,7 @@ necessary variables:
 ```bash
 NAME_DB=newsnexus07.db
 PATH_DATABASE=/Users/nick/Documents/_databases/NewsNexus07/
-PATH_TO_KEYWORDS_EXCEL_FILE=/Users/nick/Documents/_project_resources/NewsNexus07/utilities/relevancy_scorer/NewsNexusRelevancyScorerKeywords.xlsx
+PATH_TO_SEMANTIC_SCORER_KEYWORDS_EXCEL_FILE=/Users/nick/Documents/_project_resources/NewsNexus07/utilities/relevancy_scorer/NewsNexusRelevancyScorerKeywords.xlsx
 ```
 
 ## model used
