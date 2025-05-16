@@ -95,11 +95,13 @@ function createLogTextFileCompletedStatus(scoredArticleCount) {
     }
   });
   // delete the isRunningStatus.txt file
-  fs.unlink(path.join(logDir, "isRunningStatus.txt"), (err) => {
-    if (err) {
-      console.error("Failed to delete isRunningStatus.txt file:", err);
-    }
-  });
+  if (fs.existsSync(path.join(logDir, "isRunningStatus.txt"))) {
+    fs.unlink(path.join(logDir, "isRunningStatus.txt"), (err) => {
+      if (err) {
+        console.error("Failed to delete isRunningStatus.txt file:", err);
+      }
+    });
+  }
 }
 
 function createLogTextFileIsRunningStatus(scoredArticleCount) {
