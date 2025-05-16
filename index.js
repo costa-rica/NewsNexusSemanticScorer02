@@ -59,7 +59,7 @@ async function main() {
       embedder
     );
 
-    console.log(`article id: ${article.id}`);
+    // console.log(`article id: ${article.id}`);
     // console.log(`article description: ${article.description}`);
     // console.log(`keyword: ${keyword}`);
     // console.log(`keyword rating: ${keywordRating}`);
