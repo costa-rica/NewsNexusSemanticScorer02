@@ -47,8 +47,8 @@ async function main() {
     "Xenova/paraphrase-MiniLM-L6-v2"
   );
 
-  // For Testing
-  articlesArray = articlesArray.slice(0, 10);
+  // // For Testing
+  // articlesArray = articlesArray.slice(0, 10);
 
   // for (let article of articlesArray) {
   for (let i = 0; i < articlesArray.length; i++) {
