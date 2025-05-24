@@ -90,9 +90,10 @@ function createLogTextFileCompletedStatus(scoredArticleCount) {
   fs.writeFile(fullPath, content, (err) => {
     if (err) {
       console.error("Failed to write log file:", err);
-    } else {
-      console.log(`Log file created at ${fullPath}`);
     }
+    // else {
+    //   console.log(`Log file created at ${fullPath}`);
+    // }
   });
   // delete the isRunningStatus.txt file
   if (fs.existsSync(path.join(logDir, "isRunningStatus.txt"))) {
@@ -123,9 +124,10 @@ function createLogTextFileIsRunningStatus(scoredArticleCount) {
   fs.writeFile(fullPath, content, (err) => {
     if (err) {
       console.error("Failed to write log file:", err);
-    } else {
-      console.log(`Log file created at ${fullPath}`);
     }
+    // else {
+    //   console.log(`Log file created at ${fullPath}`);
+    // }
   });
 }
 
