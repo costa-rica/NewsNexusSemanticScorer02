@@ -29,12 +29,24 @@ npm install
 
 ## .env
 
-necessary variables:
+### workstation
 
-```bash
-NAME_DB=newsnexus07.db
-PATH_DATABASE=/Users/nick/Documents/_databases/NewsNexus07/
-PATH_TO_SEMANTIC_SCORER_KEYWORDS_EXCEL_FILE=/Users/nick/Documents/_project_resources/NewsNexus07/utilities/relevancy_scorer/NewsNexusRelevancyScorerKeywords.xlsx
+```
+NAME_APP=NewsNexusSemanticScorer02
+NAME_DB=newsnexus10.db
+PATH_DATABASE=/Users/nick/Documents/_databases/NewsNexus10/
+PATH_TO_SEMANTIC_SCORER_DIR=/Users/nick/Documents/_project_resources/NewsNexus10/utilities/semantic_scorer
+PATH_TO_SEMANTIC_SCORER_KEYWORDS_EXCEL_FILE=/Users/nick/Documents/_project_resources/NewsNexus10/utilities/semantic_scorer/NewsNexusSemanticScorerKeywords.xlsx
+```
+
+### server
+
+```
+NAME_APP=NewsNexusSemanticScorer02
+NAME_DB=newsnexus10.db
+PATH_DATABASE=/home/nick/databases/NewsNexus10/
+PATH_TO_SEMANTIC_SCORER_DIR=/home/nick/project_resources/NewsNexus10/utilities/semantic_scorer
+PATH_TO_SEMANTIC_SCORER_KEYWORDS_EXCEL_FILE=/home/nick/project_resources/NewsNexus10/utilities/semantic_scorer/NewsNexusSemanticScorerKeywords.xlsx
 ```
 
 ## model used

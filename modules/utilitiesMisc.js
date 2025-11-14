@@ -6,7 +6,7 @@ const {
   Article,
   ArticleEntityWhoCategorizedArticleContract,
   ArticleApproved,
-} = require("newsnexus07db");
+} = require("newsnexus10db");
 
 async function loadKeywordsFromExcel(excelPath) {
   const workbook = new ExcelJS.Workbook();

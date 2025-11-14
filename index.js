@@ -1,9 +1,16 @@
 require("dotenv").config();
+// Initialize database models BEFORE importing other modules
+const { initModels, sequelize } = require("newsnexus10db");
+initModels();
+console.log(
+  `database location: ${process.env.PATH_DATABASE}${process.env.NAME_DB}`
+);
+
 const {
   EntityWhoCategorizedArticle,
   ArtificialIntelligence,
   ArticleEntityWhoCategorizedArticleContract,
-} = require("newsnexus07db");
+} = require("newsnexus10db");
 
 const { scoreArticleWithKeywords } = require("./modules/utilitiesScorer");
 const {
