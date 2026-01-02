@@ -13,6 +13,7 @@
     "@xenova/transformers": "^2.17.2",
     "dotenv": "^16.5.0",
     "exceljs": "^4.4.0",
-    "newsnexus10db": "file:../NewsNexus10Db"
+    "newsnexus10db": "file:../NewsNexus10Db",
+    "winston": "^3.19.0"
   }
 }
