@@ -1,6 +1,6 @@
 require("dotenv").config();
-// Initialize logger FIRST (monkey-patches console methods)
-const logger = require("./logger");
+// Initialize logger FIRST
+const logger = require("./modules/logger");
 // Initialize database models BEFORE importing other modules
 const { initModels, sequelize } = require("newsnexus10db");
 initModels();

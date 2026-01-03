@@ -2,21 +2,34 @@ const winston = require("winston");
 const path = require("path");
 const fs = require("fs");
 
+// Validate required environment variables
+const requiredEnvVars = ["NODE_ENV", "NAME_APP", "PATH_TO_LOGS"];
+for (const varName of requiredEnvVars) {
+  if (!process.env[varName]) {
+    process.stderr.write(
+      `FATAL ERROR: Required environment variable ${varName} is not set.\n`
+    );
+    process.exit(1);
+  }
+}
+
 // Determine environment
-const nodeEnv = process.env.NODE_ENV || "development";
+const nodeEnv = process.env.NODE_ENV;
 const isProduction = nodeEnv === "production";
 const isTesting = nodeEnv === "testing";
 const isDevelopment = nodeEnv === "development";
 
-const appName = process.env.NAME_APP || "app";
-const logDir = process.env.PATH_TO_LOGS || "./logs";
-const maxSize = parseInt(process.env.LOG_MAX_SIZE) || 10485760; // 10MB
-const maxFiles = parseInt(process.env.LOG_MAX_FILES) || 10;
+const appName = process.env.NAME_APP;
+const logDir = process.env.PATH_TO_LOGS;
+// Convert LOG_MAX_SIZE from megabytes to bytes (default: 5MB)
+const maxSizeMB = parseInt(process.env.LOG_MAX_SIZE) || 5;
+const maxSize = maxSizeMB * 1024 * 1024;
+const maxFiles = parseInt(process.env.LOG_MAX_FILES) || 5;
 
 // Determine log level based on environment
 let logLevel;
 if (isProduction) {
-  logLevel = "error"; // Only errors in production
+  logLevel = "info"; // Info and above in production
 } else if (isTesting) {
   logLevel = "info"; // Info and above in testing
 } else {
@@ -50,13 +63,12 @@ const logger = winston.createLogger({
 });
 
 // Add transports based on environment
-if (isProduction || isTesting) {
-  // Production and Testing: Write to files
+if (isProduction) {
+  // Production: Log files only
   try {
     // Create log directory if it doesn't exist
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
-      logger.warn(`Created log directory: ${logDir}`);
     }
 
     logger.add(
@@ -70,8 +82,8 @@ if (isProduction || isTesting) {
     );
   } catch (error) {
     // Fall back to console logging if file logging fails
-    logger.error(
-      `Failed to initialize file logging: ${error.message}. Falling back to console.`
+    process.stderr.write(
+      `Failed to initialize file logging: ${error.message}. Falling back to console.\n`
     );
     logger.add(
       new winston.transports.Console({
@@ -79,6 +91,36 @@ if (isProduction || isTesting) {
       })
     );
   }
+} else if (isTesting) {
+  // Testing: Both console AND log files
+  try {
+    // Create log directory if it doesn't exist
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+
+    logger.add(
+      new winston.transports.File({
+        filename: path.join(logDir, `${appName}.log`),
+        maxsize: maxSize,
+        maxFiles: maxFiles,
+        tailable: true,
+        format: fileLogFormat,
+      })
+    );
+  } catch (error) {
+    // Log error but continue with console logging
+    process.stderr.write(
+      `Failed to initialize file logging: ${error.message}.\n`
+    );
+  }
+
+  // Always add console in testing mode
+  logger.add(
+    new winston.transports.Console({
+      format: consoleLogFormat,
+    })
+  );
 } else {
   // Development: Console only
   logger.add(
@@ -87,12 +129,5 @@ if (isProduction || isTesting) {
     })
   );
 }
-
-// Monkey-patch console methods
-logger.info = (...args) => logger.info(args.join(" "));
-logger.error = (...args) => logger.error(args.join(" "));
-logger.warn = (...args) => logger.warn(args.join(" "));
-logger.info = (...args) => logger.info(args.join(" "));
-logger.debug = (...args) => logger.debug(args.join(" "));
 
 module.exports = logger;
