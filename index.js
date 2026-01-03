@@ -4,7 +4,7 @@ const logger = require("./logger");
 // Initialize database models BEFORE importing other modules
 const { initModels, sequelize } = require("newsnexus10db");
 initModels();
-console.log(
+logger.info(
   `database location: ${process.env.PATH_DATABASE}${process.env.NAME_DB}`
 );
 
@@ -22,7 +22,7 @@ const {
   createLogTextFileIsRunningStatus,
 } = require("./modules/utilitiesMisc");
 
-console.log("--- NewsNexus Semantic Scorer 02 ---");
+logger.info("--- NewsNexus Semantic Scorer 02 ---");
 
 async function main() {
   const aiModel = await ArtificialIntelligence.findOne({
@@ -42,14 +42,14 @@ async function main() {
   const entity = aiModel?.EntityWhoCategorizedArticles?.[0];
   const entityWhoCategorizesId = entity?.id;
 
-  console.log("EntityWhoCategorizedArticle:", entityWhoCategorizesId);
+  logger.info("EntityWhoCategorizedArticle:", entityWhoCategorizesId);
   // const articles = await Article.findAll();
   let articlesArray = await createFilteredArticlesArray(entityWhoCategorizesId);
-  console.log("Loaded articles:", articlesArray.length);
+  logger.info("Loaded articles:", articlesArray.length);
   const keywords = await loadKeywordsFromExcel(
     process.env.PATH_TO_SEMANTIC_SCORER_KEYWORDS_EXCEL_FILE
   );
-  console.log("Loaded keywords:", keywords.length);
+  logger.info("Loaded keywords:", keywords.length);
 
   const embedder = await require("@xenova/transformers").pipeline(
     "feature-extraction",
@@ -68,10 +68,10 @@ async function main() {
       embedder
     );
 
-    // console.log(`article id: ${article.id}`);
-    // console.log(`article description: ${article.description}`);
-    // console.log(`keyword: ${keyword}`);
-    // console.log(`keyword rating: ${keywordRating}`);
+    // logger.info(`article id: ${article.id}`);
+    // logger.info(`article description: ${article.description}`);
+    // logger.info(`keyword: ${keyword}`);
+    // logger.info(`keyword rating: ${keywordRating}`);
     if (keyword && keywordRating) {
       await ArticleEntityWhoCategorizedArticleContract.upsert({
         articleId: article.id,
@@ -83,13 +83,13 @@ async function main() {
 
     // if ((i + 1) % 100 === 0) {
     if ((i + 1) % 100 === 0) {
-      // console.log(`Scored and saved article ${i}`);
-      console.log(`Processed ${i + 1} articles...`);
+      // logger.info(`Scored and saved article ${i}`);
+      logger.info(`Processed ${i + 1} articles...`);
       createLogTextFileIsRunningStatus(i + 1);
     }
   }
   createLogTextFileCompletedStatus(articlesArray.length);
-  console.log("✅ All articles processed and saved.");
+  logger.info("✅ All articles processed and saved.");
 }
 
 main();

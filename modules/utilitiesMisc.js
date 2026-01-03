@@ -54,7 +54,7 @@ async function createFilteredArticlesArray(entityWhoCategorizesId) {
   const articlesArrayModified = filteredArticles.map((article) => {
     let description = article.description;
     if (article.description === null || article.description === "") {
-      // console.log(
+      // logger.info(
       //   `article ${article.id} has no description replaced with approved text`
       // );
       const articleApproved = article.ArticleApproveds?.[0];
@@ -80,7 +80,7 @@ function createLogTextFileCompletedStatus(scoredArticleCount) {
   const logDir = process.env.PATH_TO_SEMANTIC_SCORER_DIR;
 
   if (!logDir) {
-    console.error("PATH_TO_SEMANTIC_SCORER_DIR is not defined in .env");
+    logger.error("PATH_TO_SEMANTIC_SCORER_DIR is not defined in .env");
     return;
   }
 
@@ -89,17 +89,17 @@ function createLogTextFileCompletedStatus(scoredArticleCount) {
 
   fs.writeFile(fullPath, content, (err) => {
     if (err) {
-      console.error("Failed to write log file:", err);
+      logger.error("Failed to write log file:", err);
     }
     // else {
-    //   console.log(`Log file created at ${fullPath}`);
+    //   logger.info(`Log file created at ${fullPath}`);
     // }
   });
   // delete the isRunningStatus.txt file
   if (fs.existsSync(path.join(logDir, "isRunningStatus.txt"))) {
     fs.unlink(path.join(logDir, "isRunningStatus.txt"), (err) => {
       if (err) {
-        console.error("Failed to delete isRunningStatus.txt file:", err);
+        logger.error("Failed to delete isRunningStatus.txt file:", err);
       }
     });
   }
@@ -114,7 +114,7 @@ function createLogTextFileIsRunningStatus(scoredArticleCount) {
   const logDir = process.env.PATH_TO_SEMANTIC_SCORER_DIR;
 
   if (!logDir) {
-    console.error("PATH_TO_SEMANTIC_SCORER_DIR is not defined in .env");
+    logger.error("PATH_TO_SEMANTIC_SCORER_DIR is not defined in .env");
     return;
   }
 
@@ -123,10 +123,10 @@ function createLogTextFileIsRunningStatus(scoredArticleCount) {
 
   fs.writeFile(fullPath, content, (err) => {
     if (err) {
-      console.error("Failed to write log file:", err);
+      logger.error("Failed to write log file:", err);
     }
     // else {
-    //   console.log(`Log file created at ${fullPath}`);
+    //   logger.info(`Log file created at ${fullPath}`);
     // }
   });
 }

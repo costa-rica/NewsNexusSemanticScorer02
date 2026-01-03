@@ -56,7 +56,7 @@ if (isProduction || isTesting) {
     // Create log directory if it doesn't exist
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
-      console.warn(`Created log directory: ${logDir}`);
+      logger.warn(`Created log directory: ${logDir}`);
     }
 
     logger.add(
@@ -70,7 +70,7 @@ if (isProduction || isTesting) {
     );
   } catch (error) {
     // Fall back to console logging if file logging fails
-    console.error(
+    logger.error(
       `Failed to initialize file logging: ${error.message}. Falling back to console.`
     );
     logger.add(
@@ -89,10 +89,10 @@ if (isProduction || isTesting) {
 }
 
 // Monkey-patch console methods
-console.log = (...args) => logger.info(args.join(" "));
-console.error = (...args) => logger.error(args.join(" "));
-console.warn = (...args) => logger.warn(args.join(" "));
-console.info = (...args) => logger.info(args.join(" "));
-console.debug = (...args) => logger.debug(args.join(" "));
+logger.info = (...args) => logger.info(args.join(" "));
+logger.error = (...args) => logger.error(args.join(" "));
+logger.warn = (...args) => logger.warn(args.join(" "));
+logger.info = (...args) => logger.info(args.join(" "));
+logger.debug = (...args) => logger.debug(args.join(" "));
 
 module.exports = logger;
